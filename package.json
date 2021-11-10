@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "build": "node build/create-dist.js && node build/minify.js"
+  },
+  "devDependencies": {
+    "clean-css": "^4.2.4",
+    "fs-extra": "^10.0.0",
+    "html-minifier": "^4.0.0",
+    "uglify-js": "^3.14.3"
+  }
+}
