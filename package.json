@@ -2,7 +2,7 @@
   "scripts": {
     "build": "node build/create-dist.js && node build/minify.js",
     "lint": "",
-    "pre-commit-msg": "echo 'Pre-commit checks...' && exit 0"
+    "pre-commit-msg": "echo \"Pre-commit checks...\" && exit 0"
   },
   "pre-commit": [
     "pre-commit-msg",
