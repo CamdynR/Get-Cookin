@@ -1,1 +1,1 @@
-function init(){console.log("Test")}window.addEventListener("DOMContentLoaded",init);
+function init(){}window.addEventListener("DOMContentLoaded",init);

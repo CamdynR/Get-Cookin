@@ -1,10 +1,10 @@
 // minify.js
 
-const fs = require('fs');
-const { resolve } = require('path');
-const minifyHTML = require('html-minifier').minify;
-const CleanCSS = require('clean-css');
-const UglifyJS = require('uglify-js');
+const fs = require("fs");
+const { resolve } = require("path");
+const minifyHTML = require("html-minifier").minify;
+const CleanCSS = require("clean-css");
+const UglifyJS = require("uglify-js");
 
 const htmlMinOptions = {
   caseSensitive: true, // Treat attributes in case sensitive manner (useful for custom HTML tags)
@@ -16,7 +16,7 @@ const htmlMinOptions = {
   minifyJS: true, // 	Minify JavaScript in script elements and event attributes (uses UglifyJS)
   removeAttributeQuotes: true, // Remove quotes around attributes when possible
   removeComments: true, // Strip HTML comments
-  removeEmptyAttributes: true // Remove all attributes with whitespace-only values
+  removeEmptyAttributes: true, // Remove all attributes with whitespace-only values
 };
 
 const cssMinOptions = {
@@ -35,9 +35,9 @@ const cssMinOptions = {
       removeDuplicateRules: true, // controls duplicate rules removing; defaults to true
       removeUnusedAtRules: false, // controls unused at rule removing; defaults to false (available since 4.1.0)
       restructureRules: false, // controls rule restructuring; defaults to false
-      skipProperties: [] // controls which properties won't be optimized, defaults to `[]` which means all will be optimized (since 4.1.0)
-    }
-  }
+      skipProperties: [], // controls which properties won't be optimized, defaults to `[]` which means all will be optimized (since 4.1.0)
+    },
+  },
 };
 
 const jsMinOptions = {
@@ -53,42 +53,46 @@ const jsMinOptions = {
   toplevel: false, //set to true if you wish to enable top level variable and function name mangling and to drop unused variables and functions.
   v8: false, //enable workarounds for Chrome & Node.js bugs.
   warnings: false, //pass true to return compressor warnings in result.warnings. Use the value "verbose" for more detailed warnings.
-  webkit: false //enable workarounds for Safari/WebKit bugs. PhantomJS users should set this option to true.
+  webkit: false, //enable workarounds for Safari/WebKit bugs. PhantomJS users should set this option to true.
 };
 
 // A function to recursively collect the file paths of all of the files in a given dir
 async function getFiles(dir) {
   const dirents = fs.readdirSync(dir, { withFileTypes: true });
-  const files = await Promise.all(dirents.map((dirent) => {
-    const res = resolve(dir, dirent.name);
-    return dirent.isDirectory() ? getFiles(res) : res;
-  }));
+  const files = await Promise.all(
+    dirents.map((dirent) => {
+      const res = resolve(dir, dirent.name);
+      return dirent.isDirectory() ? getFiles(res) : res;
+    })
+  );
   return Array.prototype.concat(...files);
 }
 
 // Get all of the files from 'dist' and then minify the HTML, CSS, & JS
-getFiles('dist')
-  .then(files => {
-    files.forEach(file => {
-      const ext = file.split('.').pop();
+console.log("\n***** Minifying the /dist directory *****");
+console.log("minifying...");
+getFiles("dist")
+  .then((files) => {
+    files.forEach((file) => {
+      const ext = file.split(".").pop();
       let fileData;
 
       // Minify the HTML
-      if (ext == 'html' || ext == 'HTML') {
-        fileData = fs.readFileSync(file, 'utf8');
+      if (ext == "html" || ext == "HTML") {
+        fileData = fs.readFileSync(file, "utf8");
         fileData = minifyHTML(fileData, htmlMinOptions);
 
         // Minify the CSS
-      } else if (ext == 'css' || ext == 'CSS') {
-        fileData = fs.readFileSync(file, 'utf8');
+      } else if (ext == "css" || ext == "CSS") {
+        fileData = fs.readFileSync(file, "utf8");
         fileData = new CleanCSS(cssMinOptions).minify(fileData).styles;
 
         // Minify the JS
-      } else if (ext == 'js' || ext == 'JS') {
-        fileData = fs.readFileSync(file, 'utf8');
+      } else if (ext == "js" || ext == "JS") {
+        fileData = fs.readFileSync(file, "utf8");
         const result = UglifyJS.minify(fileData, jsMinOptions);
-        if (!result.error) { 
-          fileData = result.code 
+        if (!result.error) {
+          fileData = result.code;
         } else {
           console.log(`Error minifying JS: ${result.error}`);
         }
@@ -97,4 +101,7 @@ getFiles('dist')
       // Write file data to file
       if (fileData) fs.writeFileSync(file, fileData);
     });
+  })
+  .then(() => {
+    console.log("***** Minification complete *****\n");
   });

@@ -1,7 +1,8 @@
 {
   "scripts": {
-    "build": "node build/create-dist.js && node build/minify.js",
-    "lint": "",
+    "build": "npm run format && node build/create-dist.js && node build/minify.js",
+    "lint": "sh ./node_modules/.bin/eslint src",
+    "format": "npx prettier --write src/",
     "pre-commit-msg": "echo \"Pre-commit checks...\" && exit 0"
   },
   "pre-commit": [
@@ -10,9 +11,15 @@
   ],
   "devDependencies": {
     "clean-css": "^4.2.4",
+    "eslint": "^8.2.0",
+    "eslint-cli": "^1.1.1",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.25.3",
     "fs-extra": "^10.0.0",
     "html-minifier": "^4.0.0",
     "pre-commit": "^1.2.2",
+    "prettier": "2.4.1",
     "uglify-js": "^3.14.3"
   }
 }
